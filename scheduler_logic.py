@@ -60,7 +60,6 @@ def simulate_srtf(processes):
     time, done = 0, 0
     timeline = []
     prev, prev_start = None, 0
-
     while done < len(ps):
         available = [p for p in ps if p['at'] <= time and p['rem'] > 0]
         if not available:
@@ -121,8 +120,11 @@ def generate_comparison(pri_ps, srtf_ps):
 
     if s_art < p_art:
         lines.append(f"[Q2] SRTF produced lower avg response time ({s_art:.2f} vs {p_art:.2f}).")
-    else:
+    elif s_art > p_art:
         lines.append(f"[Q2] Priority produced lower avg response time ({p_art:.2f} vs {s_art:.2f}).")
+    else:
+        lines.append(f"[Q1] Both algorithms tied in avg response time ({p_art:.2f}).")
+
 
     high_pri = [p for p in pri_ps if p['pr'] == min(x['pr'] for x in pri_ps)]
     if high_pri and high_pri[0]['rt'] < avg(pri_ps, 'rt'):
@@ -140,8 +142,8 @@ def generate_comparison(pri_ps, srtf_ps):
         lines.append("[Q5] RECOMMENDATION: SRTF is better for this workload (lower avg WT).")
     else:
         lines.append("[Q5] RECOMMENDATION: Priority Scheduling is better for this workload.")
+  
 
-    # Q6 Short low-priority job in Priority
     if pri_ps:
         max_pr   = max(p['pr'] for p in pri_ps)
         avg_bt_p = avg(pri_ps, 'bt')
@@ -151,7 +153,7 @@ def generate_comparison(pri_ps, srtf_ps):
         else:
             lines.append("[Q6] No short low-priority jobs found in this workload.")
 
-    # Q7 Long high-priority job in SRTF
+      
     if srtf_ps:
         min_pr   = min(p['pr'] for p in srtf_ps)
         avg_bt_s = avg(srtf_ps, 'bt')
@@ -178,10 +180,10 @@ def generate_comparison(pri_ps, srtf_ps):
     lines.append("         FINAL CONCLUSION")
     lines.append("=" * 52)
 
-    if s_awt <= p_awt and s_atat <= p_atat:
+    if s_awt < p_awt :
         winner = "SRTF"
         loser = "Priority Scheduling"
-    elif p_awt <= s_awt and p_atat <= s_atat:
+    elif p_awt < s_awt :
         winner = "Priority Scheduling"
         loser = "SRTF"
     else:

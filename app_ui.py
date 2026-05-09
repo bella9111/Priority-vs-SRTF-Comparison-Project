@@ -1,6 +1,5 @@
 # app_ui.py - Single-Page Layout
 import tkinter as tk
-from tkinter import messagebox
 import customtkinter as ctk
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -42,7 +41,6 @@ class SchedulerApp(ctk.CTk):
         self.processes = []
         self.gantt_canvas_widget = None
         self.gantt_fig = None
-
         self.build_ui()
 
     def build_ui(self):
@@ -66,7 +64,7 @@ class SchedulerApp(ctk.CTk):
         self.main_canvas.bind("<Configure>", self._on_canvas_configure)
         self.main_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
 
-        # ── Build all sections ─────────────────────────────────────────────────
+      
         self._build_input_section()
         self._build_process_table_section()
         self._build_gantt_section()
@@ -74,7 +72,7 @@ class SchedulerApp(ctk.CTk):
         self._build_comparison_section()
         self._build_conclusion_section()
 
-    # ── Scroll helpers ──────────────────────────────────────────────────────────
+    
     def _on_frame_configure(self, event=None):
         self.main_canvas.configure(scrollregion=self.main_canvas.bbox("all"))
 
@@ -84,34 +82,30 @@ class SchedulerApp(ctk.CTk):
     def _on_mousewheel(self, event):
         self.main_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-    # ── Section header helper ───────────────────────────────────────────────────
+  
     def _section_header(self, parent, text, color="#818cf8", icon=""):
         hdr = ctk.CTkFrame(parent, fg_color=SURFACE2, corner_radius=8, height=40)
         hdr.pack(fill="x", padx=16, pady=(16, 6))
         hdr.pack_propagate(False)
         ctk.CTkLabel(hdr, text=f"{icon}  {text}" if icon else text,
                      font=("Consolas", 13, "bold"), text_color=color).pack(side="left", padx=14)
-        # accent line
+        
         line = ctk.CTkFrame(hdr, fg_color=color, width=3, corner_radius=2)
         line.pack(side="left", fill="y", padx=(0, 8), pady=6)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # SECTION 1 — Input Panel
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def _build_input_section(self):
         self._section_header(self.scroll_frame, "Input Panel", "#818cf8", "①")
 
         panel = ctk.CTkFrame(self.scroll_frame, fg_color=SURFACE, corner_radius=10)
         panel.pack(fill="x", padx=16, pady=(0, 4))
 
-        # Column labels
         lbl_row = ctk.CTkFrame(panel, fg_color="transparent")
         lbl_row.pack(fill="x", padx=12, pady=(10, 2))
         for lbl in ["Process ID", "Arrival Time", "Burst Time", "Priority (1=highest)"]:
             ctk.CTkLabel(lbl_row, text=lbl, font=("Consolas", 11),
                          text_color="#94a3b8", width=140).pack(side="left", padx=4)
 
-        # Entry fields
         entry_kw = {"width": 140, "fg_color": SURFACE2, "text_color": TEXT,
                     "border_color": "#4a4d5a", "font": ("Consolas", 12)}
         form = ctk.CTkFrame(panel, fg_color="transparent")
@@ -134,7 +128,7 @@ class SchedulerApp(ctk.CTk):
         self.warn_label = ctk.CTkLabel(panel, text="", font=("Consolas", 11), text_color=DANGER)
         self.warn_label.pack(pady=(0, 4))
 
-        # Action buttons + scenarios
+      
         btn_row = ctk.CTkFrame(panel, fg_color="transparent")
         btn_row.pack(pady=(0, 8))
 
@@ -178,9 +172,7 @@ class SchedulerApp(ctk.CTk):
         self.proc_scroll = ctk.CTkScrollableFrame(table_outer, fg_color=SURFACE, height=160, corner_radius=6)
         self.proc_scroll.pack(fill="x", padx=8, pady=(2, 10))
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # SECTION 3 & 4 — Gantt Charts (Priority + SRTF)
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def _build_gantt_section(self):
         self._section_header(self.scroll_frame, "Gantt Chart — Priority Scheduling", PRI_COL, "③")
         self.gantt_pri_frame = ctk.CTkFrame(self.scroll_frame, fg_color=SURFACE, corner_radius=10, height=180)
@@ -194,9 +186,8 @@ class SchedulerApp(ctk.CTk):
         ctk.CTkLabel(self.gantt_srtf_frame, text="Run simulation to see Gantt Chart",
                      font=("Consolas", 13), text_color="#475569").pack(expand=True, pady=60)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # SECTION 5 & 6 — Results Tables
-    # ══════════════════════════════════════════════════════════════════════════════
+  
+
     def _build_results_section(self):
         self._section_header(self.scroll_frame, "Results Table — Priority Scheduling", PRI_COL, "⑤")
         self.pri_results_frame = ctk.CTkFrame(self.scroll_frame, fg_color=SURFACE, corner_radius=10)
@@ -210,9 +201,7 @@ class SchedulerApp(ctk.CTk):
         ctk.CTkLabel(self.srtf_results_frame, text="Run simulation to see results.",
                      font=("Consolas", 12), text_color="#475569").pack(pady=20)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # SECTION 7 — Comparison Summary
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def _build_comparison_section(self):
         self._section_header(self.scroll_frame, "Comparison Summary", ACCENT, "⑦")
         self.comparison_frame = ctk.CTkFrame(self.scroll_frame, fg_color=SURFACE, corner_radius=10)
@@ -220,9 +209,7 @@ class SchedulerApp(ctk.CTk):
         ctk.CTkLabel(self.comparison_frame, text="Run simulation to see comparison.",
                      font=("Consolas", 12), text_color="#475569").pack(pady=20)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # SECTION 8 — Final Conclusion
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def _build_conclusion_section(self):
         self._section_header(self.scroll_frame, "Final Conclusion", SUCCESS, "⑧")
         self.conclusion_outer = ctk.CTkFrame(self.scroll_frame, fg_color=SURFACE, corner_radius=10)
@@ -235,9 +222,7 @@ class SchedulerApp(ctk.CTk):
         self.conclusion_text.insert("end", "Run simulation to see Final Conclusion.\n")
         self.conclusion_text.configure(state="disabled")
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # Process management
-    # ══════════════════════════════════════════════════════════════════════════════
+  
     def add_process(self):
         self.warn_label.configure(text="")
         pid = self.pid_entry.get().strip()
@@ -328,12 +313,9 @@ class SchedulerApp(ctk.CTk):
         self._render_comparison(pri_ps, srtf_ps)
         self._render_conclusion(pri_ps, srtf_ps)
 
-        # Scroll to top after update
         self.main_canvas.yview_moveto(0)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # Gantt drawing (one chart per frame)
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def _draw_gantt_chart(self, parent_frame, timeline, all_ps, title, title_color):
         for widget in parent_frame.winfo_children():
             widget.destroy()
@@ -378,9 +360,7 @@ class SchedulerApp(ctk.CTk):
         canvas.get_tk_widget().pack(fill="both", expand=True, padx=8, pady=8)
         plt.close(fig)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # Results table renderer
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def render_results_table(self, parent, ps, color):
         for w in parent.winfo_children():
             w.destroy()
@@ -411,9 +391,7 @@ class SchedulerApp(ctk.CTk):
                          font=("Consolas", 11, "bold"), text_color=ACCENT,
                          width=widths[5 + i]).grid(row=0, column=5 + i, padx=4, pady=4)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # Comparison Summary (visual cards)
-    # ══════════════════════════════════════════════════════════════════════════════
+
     def _render_comparison(self, pri_ps, srtf_ps):
         for w in self.comparison_frame.winfo_children():
             w.destroy()
@@ -428,7 +406,6 @@ class SchedulerApp(ctk.CTk):
             ("Avg Response Time",   p_art,  s_art),
         ]
 
-        # Table header
         hdr = ctk.CTkFrame(self.comparison_frame, fg_color=SURFACE2, corner_radius=6)
         hdr.pack(fill="x", padx=8, pady=(10, 0))
         for col, (lbl, w, clr) in enumerate([
@@ -455,7 +432,6 @@ class SchedulerApp(ctk.CTk):
             ctk.CTkLabel(row, text=f"◀ {winner}", font=("Consolas", 12, "bold"),
                          text_color=wc, width=160).grid(row=0, column=3, padx=10)
 
-        # Starvation row
         from scheduler_logic import detect_starvation
         p_starved = detect_starvation(pri_ps)
         s_starved = detect_starvation(srtf_ps)
@@ -470,13 +446,12 @@ class SchedulerApp(ctk.CTk):
         ctk.CTkLabel(star_row, text=s_star_txt, font=("Consolas", 11),
                      text_color=DANGER if s_starved else SUCCESS, width=160).grid(row=0, column=2, padx=10)
 
-        # Short low-priority in Priority
+      
         max_pr   = max(p['pr'] for p in pri_ps)
         avg_bt_p = avg(pri_ps, 'bt')
         short_low = [p for p in pri_ps if p['bt'] <= avg_bt_p and p['pr'] == max_pr]
         short_low_txt = f"Waited avg {avg(short_low, 'wt'):.2f}" if short_low else "No such jobs"
 
-        # Long high-priority in SRTF
         min_pr   = min(p['pr'] for p in srtf_ps)
         avg_bt_s = avg(srtf_ps, 'bt')
         long_urgent = [p for p in srtf_ps if p['bt'] >= avg_bt_s and p['pr'] == min_pr]
@@ -500,9 +475,7 @@ class SchedulerApp(ctk.CTk):
         ctk.CTkLabel(row2, text=long_urgent_txt, font=("Consolas", 11),
                      text_color=DANGER, width=160).grid(row=0, column=2, padx=10)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # Final Conclusion
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def _render_conclusion(self, pri_ps, srtf_ps):
         text = generate_comparison(pri_ps, srtf_ps)
         self.conclusion_text.configure(state="normal")
@@ -510,6 +483,6 @@ class SchedulerApp(ctk.CTk):
         self.conclusion_text.insert("end", text)
         self.conclusion_text.configure(state="disabled")
 
-        # Auto-resize height
+        
         lines = text.count('\n') + 1
         self.conclusion_text.configure(height=min(lines + 2, 30))
