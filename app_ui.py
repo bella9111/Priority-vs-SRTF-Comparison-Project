@@ -5,7 +5,6 @@ import customtkinter as ctk
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
 from config import BG, SURFACE, SURFACE2, TEXT, PRI_COL, SRTF_COL, ACCENT, DANGER, SUCCESS, SCENARIOS, PROCESS_COLORS
 from scheduler_logic import simulate_priority, simulate_srtf, avg, detect_starvation, generate_comparison
 
@@ -41,22 +40,19 @@ class SchedulerApp(ctk.CTk):
         ctk.set_appearance_mode("dark")
         self.configure(fg_color=BG)
         self.processes = []
-
-        # Store references to dynamic widgets
         self.gantt_canvas_widget = None
         self.gantt_fig = None
 
         self.build_ui()
 
     def build_ui(self):
-        # ── Title Bar ──────────────────────────────────────────────────────────
         title_bar = ctk.CTkFrame(self, fg_color=SURFACE, corner_radius=0, height=56)
         title_bar.pack(fill="x", padx=0, pady=0)
         title_bar.pack_propagate(False)
         ctk.CTkLabel(title_bar, text="Priority vs SRTF Scheduling Simulator",
                      font=("Consolas", 20, "bold"), text_color="#818cf8").pack(side="left", padx=20, pady=10)
 
-        # ── Main scrollable canvas ─────────────────────────────────────────────
+    
         self.main_canvas = tk.Canvas(self, bg=BG, highlightthickness=0)
         scrollbar = ctk.CTkScrollbar(self, command=self.main_canvas.yview)
         scrollbar.pack(side="right", fill="y")
@@ -166,9 +162,7 @@ class SchedulerApp(ctk.CTk):
                           font=("Consolas", 11),
                           command=lambda n=name: self.load_scenario(n)).pack(side="left", padx=4)
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # SECTION 2 — Process Table
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def _build_process_table_section(self):
         self._section_header(self.scroll_frame, "Process Table", "#38bdf8", "②")
 
@@ -313,9 +307,7 @@ class SchedulerApp(ctk.CTk):
         self.refresh_process_table()
         self.warn_label.configure(text="")
 
-    # ══════════════════════════════════════════════════════════════════════════════
-    # Simulation runner
-    # ══════════════════════════════════════════════════════════════════════════════
+    
     def run_simulation(self):
         self.warn_label.configure(text="")
         if len(self.processes) < 2:
@@ -324,9 +316,6 @@ class SchedulerApp(ctk.CTk):
 
         pri_ps, pri_tl = simulate_priority(self.processes)
         srtf_ps, srtf_tl = simulate_srtf(self.processes)
-
-        self.processes = []
-        self.refresh_process_table()
 
         self._draw_gantt_chart(self.gantt_pri_frame, pri_tl, pri_ps + srtf_ps,
                                "Priority Scheduling", PRI_COL)
