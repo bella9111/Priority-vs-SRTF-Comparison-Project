@@ -89,9 +89,7 @@ class SchedulerApp(ctk.CTk):
         hdr.pack_propagate(False)
         ctk.CTkLabel(hdr, text=f"{icon}  {text}" if icon else text,
                      font=("Consolas", 13, "bold"), text_color=color).pack(side="left", padx=14)
-        
-        line = ctk.CTkFrame(hdr, fg_color=color, width=3, corner_radius=2)
-        line.pack(side="left", fill="y", padx=(0, 8), pady=6)
+  
 
     
     def _build_input_section(self):
